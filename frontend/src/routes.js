@@ -1,4 +1,5 @@
 import Photos from "pages/photos.vue";
+import Home from "pages/home.vue";
 import Albums from "pages/albums.vue";
 import Places from "pages/places.vue";
 import Labels from "pages/labels.vue";
@@ -13,7 +14,11 @@ export default [
     {
         name: "Home",
         path: "/",
-        redirect: "/photos",
+    },
+    {
+        name: "Home",
+        path: "/home",
+        component: Home,
     },
     {
         name: "Photos",
@@ -83,6 +88,6 @@ export default [
         meta: {area: "Settings"},
     },
     {
-        path: "*", redirect: "/photos",
+        path: "*", redirect: "/login",
     },
 ];

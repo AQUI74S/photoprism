@@ -5,7 +5,7 @@
         <p-alert></p-alert>
 
         <v-app>
-            <p-navigation></p-navigation>
+            <p-navigation v-show="loggedIn"></p-navigation>
 
             <v-content>
                 <router-view></router-view>
@@ -21,6 +21,16 @@
 
     export default {
         name: 'photoprism',
+        data(){
+            return {
+                loggedIn: true
+            }
+        },
+        created(){
+            if (this.$router.currentRoute.name == "Home") {
+                this.loggedIn= false
+            }
+        },
         computed: {},
         methods: {
             login() {

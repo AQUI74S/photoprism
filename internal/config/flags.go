@@ -37,7 +37,7 @@ var GlobalFlags = []cli.Flag{
 	cli.StringFlag{
 		Name:   "config-file, c",
 		Usage:  "load configuration from `FILENAME`",
-		Value:  "~/.config/photoprism/photoprism.yml",
+		Value:  "~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/config/photoprism.yml",
 		EnvVar: "PHOTOPRISM_CONFIG_FILE",
 	},
 	cli.StringFlag{
