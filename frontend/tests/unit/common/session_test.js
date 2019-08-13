@@ -1,8 +1,19 @@
-import assert from 'assert';
 import Session from 'common/session';
 import User from 'model/user';
+import MockAdapter from "axios-mock-adapter";
+import Api from "common/api";
+
+let chai = require('../../../node_modules/chai/chai');
+let assert = chai.assert;
 
 describe('common/session', () => {
+
+    const mock = new MockAdapter(Api);
+
+    beforeEach(() => {
+        window.onbeforeunload = () => 'Oh no!';
+    });
+
     it('should construct session',  () => {
         const storage = window.localStorage;
         const session = new Session(storage);
@@ -118,6 +129,20 @@ describe('common/session', () => {
         session.deleteUser();
     });
 
-
+    it('should test login and logout',  async() => {
+        mock
+            .onPost("session").reply(200,  {token: "8877", user: {email: "test@test.com", password: "passwd"}})
+            .onDelete("session/8877").reply(200);
+        const storage = window.localStorage;
+        const session = new Session(storage);
+        assert.equal(session.session_token, null);
+        assert.equal(session.storage.user, undefined);
+        await session.login("test@test.com", "passwd");
+        assert.equal(session.session_token, 8877);
+        assert.equal(session.storage.user, "{\"email\":\"test@test.com\",\"password\":\"passwd\"}");
+        await session.logout();
+        assert.equal(session.session_token, null);
+        mock.reset();
+    });
 
 });

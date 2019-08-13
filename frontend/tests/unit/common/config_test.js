@@ -1,14 +1,14 @@
-import assert from "assert";
 import Config from "common/config";
 import MockAdapter from "axios-mock-adapter";
 import Api from "common/api";
 
-const mock = new MockAdapter(Api);
-
-mock
-    .onGet("config").reply(200,  {fromServer: "yes"});
+let chai = require('../../../node_modules/chai/chai');
+let assert = chai.assert;
 
 describe("common/config", () => {
+
+    const mock = new MockAdapter(Api);
+
     it("should get all config values",  () => {
         const storage = window.localStorage;
         const values = {name: "testConfig", year: "2300"};
@@ -55,6 +55,7 @@ describe("common/config", () => {
     });
 
     it("should pull from server",  async() => {
+        mock.onGet("config").reply(200,  {fromServer: "yes"});
         const storage = window.localStorage;
         const values = {name: "testConfig", year: "2300"};
 
@@ -64,5 +65,6 @@ describe("common/config", () => {
         assert.equal(config.values.fromServer, undefined);
         await config.pullFromServer();
         assert.equal(config.values.fromServer, "yes");
+        mock.reset();
     });
 });
