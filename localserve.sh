@@ -9,13 +9,13 @@ PHOTOPRISM_CONFIG_PATH=~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/co
 PHOTOPRISM_IMPORT_PATH=~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/photos/import
 PHOTOPRISM_EXPORT_PATH=~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/photos/export
 PHOTOPRISM_ORIGINALS_PATH=~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/photos/originals
-PHOTOPRISM_DATABASE_DRIVER=internal
-PHOTOPRISM_DATABASE_DSN="root:photoprism@tcp(localhost:4000)/photoprism?parseTime=true"
+PHOTOPRISM_DATABASE_DRIVER=mysql
+PHOTOPRISM_DATABASE_DSN="photoprism:photoprism@tcp(localhost:4001)/photoprism"
 PHOTOPRISM_HTTP_HOST=0.0.0.0
 PHOTOPRISM_HTTP_PORT=2342
 PHOTOPRISM_SQL_HOST=0.0.0.0
-PHOTOPRISM_SQL_PORT=4000
+PHOTOPRISM_SQL_PORT=4001
 PHOTOPRISM_SQL_PASSWORD=photoprism
 TF_CPP_MIN_LOG_LEVEL=0
 
-go run cmd/photoprism/photoprism.go index
+go run cmd/photoprism/photoprism.go migrate

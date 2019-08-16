@@ -2,12 +2,14 @@ module github.com/photoprism/photoprism
 
 require (
 	github.com/araddon/dateparse v0.0.0-20181123171228-21df004e09ca
+	github.com/auth0/go-jwt-middleware v0.0.0-20190805220309-36081240882b
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/etcd v3.3.10+incompatible // indirect
 	github.com/coreos/go-systemd v0.0.0-20181031085051-9002847aa142 // indirect
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548 // indirect
 	github.com/cznic/sortutil v0.0.0-20181122101858-f5f958428db8 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.0
 	github.com/djherbis/times v1.1.0
 	github.com/dsoprea/go-exif v0.0.0-20190624162249-12b8993a44a567ccf02080c8e9cd0885c92a8e7a
@@ -17,6 +19,8 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/golang/geo v0.0.0-20190507233405-a0e886e97a51 // indirect
+	github.com/gorilla/securecookie v1.1.1
+	github.com/gorilla/sessions v1.2.0
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/gosimple/slug v1.5.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4 // indirect
@@ -40,7 +44,6 @@ require (
 	github.com/pingcap/tidb-tools v2.1.3-0.20190116051332-34c808eef588+incompatible
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v0.9.3-0.20190127221311-3c4408c8b829
-	github.com/prometheus/common v0.2.0
 	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20190806203942-babf20351dd7e3ac320adedbbe5eb311aec8763c // indirect
 	github.com/satori/go.uuid v1.2.0
@@ -58,11 +61,12 @@ require (
 	github.com/uber/jaeger-lib v1.5.0 // indirect
 	github.com/unrolled/render v0.0.0-20181210145518-4c664cb3ad2f // indirect
 	github.com/urfave/cli v1.20.0
-	golang.org/x/crypto v0.0.0-20190424203555-c05e17bb3b2d // indirect
+	golang.org/x/crypto v0.0.0-20190424203555-c05e17bb3b2d
 	golang.org/x/image v0.0.0-20181116024801-cd38e8056d9b // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 	golang.org/x/sys v0.0.0-20190424175732-18eb32c0e2f0 // indirect
 	golang.org/x/text v0.3.1 // indirect
+	golang.org/x/vgo v0.0.0-20180912184537-9d567625acf4 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect

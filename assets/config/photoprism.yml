@@ -7,14 +7,14 @@ originals-path: ~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/photos/or
 import-path: ~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/photos/import
 export-path: ~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/assets/photos/export
 sql-host: localhost
-sql-port: 4000
+sql-port: 4001
 sql-password: photoprism
 http-host:
 http-mode: release
 http-port: 2342
 http-password:
-database-driver: internal
-database-dsn: root:photoprism@tcp(localhost:4000)/photoprism?parseTime=true
+database-driver: mysql
+database-dsn: photoprism:photoprism@tcp(localhost:4001)/photoprism
 pid-filename: ~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/photoprism.pid
 log-filename: ~/Documents/Arbeit/Projects/PhpStorm/PhotoPrism/photoprism.log
 detach-server: false

@@ -371,7 +371,7 @@ func (c *Config) DatabaseDriver() string {
 // DatabaseDsn returns the database data source name (DSN).
 func (c *Config) DatabaseDsn() string {
 	if c.config.DatabaseDsn == "" {
-		return "root:photoprism@tcp(localhost:4000)/photoprism?parseTime=true"
+		return "photoprism:photoprism@tcp(localhost:4001)/photoprism?parseTime=true"
 	}
 
 	return c.config.DatabaseDsn
@@ -472,6 +472,7 @@ func (c *Config) MigrateDb() {
 		&models.Country{},
 		&models.Share{},
 		&models.Event{},
+		&models.User{},
 	)
 }
 

@@ -43,6 +43,8 @@ func registerRoutes(router *gin.Engine, conf *config.Config) {
 		api.DislikeAlbum(v1, conf)
 		api.AlbumThumbnail(v1, conf)
 		api.CreateAlbum(v1, conf)
+		api.Signup(v1, conf)
+		api.Signin(v1, conf)
 	}
 
 	// Default HTML page (client-side routing implemented via Vue.js)
