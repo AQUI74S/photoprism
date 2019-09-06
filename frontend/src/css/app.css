@@ -5,6 +5,7 @@
 @import url("viewer.css");
 @import url("photos.css");
 @import url("labels.css");
+@import url("login.css");
 
 body {
     background: rgb(250, 250, 250);
@@ -65,4 +66,26 @@ main {
 
 #photoprism .p-pointer {
     cursor: pointer;
+}
+
+#photoprism #login-page {
+    height: 100vh;
+}
+
+#photoprism #login-page #login-card {
+    min-width: 400px;
+    max-width: 500px;
+}
+
+#photoprism #login-page #login-field {
+    margin-right: 6px;
+}
+
+#photoprism #login-page #login-form {
+    width: 100%;
+    padding: 12px;
+}
+
+#photoprism #login-page #login-form .v-input {
+    margin-right: 12px;
 }

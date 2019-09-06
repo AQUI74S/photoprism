@@ -472,7 +472,6 @@ func (c *Config) MigrateDb() {
 		&models.Country{},
 		&models.Share{},
 		&models.Event{},
-		&models.User{},
 	)
 }
 

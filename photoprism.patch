@@ -1,0 +1,380 @@
+diff --git a/frontend/package-lock.json b/frontend/package-lock.json
+index d9da1fc..ad790a3 100644
+--- a/frontend/package-lock.json
++++ b/frontend/package-lock.json
+@@ -10838,6 +10838,11 @@
+       "resolved": "https://registry.npmjs.org/vue/-/vue-2.6.10.tgz",
+       "integrity": "sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ=="
+     },
++    "vue-cookies": {
++      "version": "1.5.13",
++      "resolved": "https://registry.npmjs.org/vue-cookies/-/vue-cookies-1.5.13.tgz",
++      "integrity": "sha512-8pjpXnvbNWx1Lft0t3MJnW+ylv0Wa2Tb6Ch617u/pQah3+SfXUZZdkh3EL3bSpe/Sw2Wdw3+DhycgQsKANSxXg=="
++    },
+     "vue-fullscreen": {
+       "version": "2.1.5",
+       "resolved": "https://registry.npmjs.org/vue-fullscreen/-/vue-fullscreen-2.1.5.tgz",
+diff --git a/frontend/src/css/app.css b/frontend/src/css/app.css
+index eb434d0..d2f462f 100644
+--- a/frontend/src/css/app.css
++++ b/frontend/src/css/app.css
+@@ -5,6 +5,7 @@
+ @import url("viewer.css");
+ @import url("photos.css");
+ @import url("labels.css");
++@import url("home.css");
+ 
+ body {
+     background: rgb(250, 250, 250);
+diff --git a/frontend/src/css/home.css b/frontend/src/css/home.css
+index e69de29..4a08608 100644
+--- a/frontend/src/css/home.css
++++ b/frontend/src/css/home.css
+@@ -0,0 +1,38 @@
++#fullScreenBackground {
++    background-image: url(http://ppcdn.500px.org/75319705/1991f76c0c6a91ae1d23eb94ac5c7a9f7e79c480/2048.jpg) ;
++    background-position: center center;
++    background-repeat:  no-repeat;
++    background-attachment: fixed;
++    background-size:  cover;
++    background-color: #999;
++    margin: 0;
++    padding: 0;
++}
++
++.wrapper {
++    height: 100%;
++    width: 100%;
++}
++
++.message {
++    -webkit-box-sizing: border-box;
++    -moz-box-sizing: border-box;
++    box-sizing: border-box;
++    width: 100%;
++    height:45%;
++    bottom: 0;
++    display: block;
++    position: absolute;
++    background-color: rgba(0,0,0,0.6);
++    color: #fff;
++    padding: 0.5em;
++}
++
++#fullScreenBackground label,
++#fullScreenBackground input {
++    color: #fff;
++}
++
++#fullScreenBackground .theme--light.v-text-field > .v-input__control > .v-input__slot::before {
++    border-color: #fff;
++}
+\ No newline at end of file
+diff --git a/frontend/src/model/auth.js b/frontend/src/model/auth.js
+index e69de29..8040ef9 100644
+--- a/frontend/src/model/auth.js
++++ b/frontend/src/model/auth.js
+@@ -0,0 +1,55 @@
++import Abstract from "model/abstract";
++import Api from "common/api";
++
++const LOGIN_URL = "signin";
++const SIGNUP_URL = "signup";
++
++class Auth extends Abstract {
++    signin(context, creds, redirect) {
++        Api.post(LOGIN_URL, creds, {
++            headers: {
++                "Content-Type": "application/json",
++            },
++        }).then(response => {
++            if (response.status === 200) {
++                localStorage.setItem("id_token", response.data.id_token);
++
++                if (redirect) {
++                    context.$router.replace(redirect);
++                }
++            }
++        }, response => {
++            context.error = response.statusText;
++        });
++    }
++
++    signup(context, creds, redirect) {
++        context.$http.post(SIGNUP_URL, creds).then(response => {
++            localStorage.setItem("id_token", response.body.id_token);
++            if (redirect) {
++                context.$router.replace(redirect);
++            }
++        }, response => {
++            context.error = response.statusText;
++        });
++    }
++
++    static logout(context) {
++        localStorage.removeItem("id_token");
++        context.$router.replace("/home");
++    }
++
++    static isAuthenticated() {
++        return !!localStorage.getItem("id_token");
++
++    }
++
++    static getAuthHeader() {
++        return {
++            "Authorization": "Bearer " + localStorage.getItem("id_token"),
++        };
++    }
++
++}
++
++export default Auth;
+diff --git a/frontend/src/pages/home.vue b/frontend/src/pages/home.vue
+index 314c970..e6745b0 100644
+--- a/frontend/src/pages/home.vue
++++ b/frontend/src/pages/home.vue
+@@ -1,111 +1,89 @@
+ <template>
+-    <p>xxxxxxx</p>
++    <div id="fullScreenBackground" class="wrapper">
++        <div class="message">
++            <v-container fluid>
++                <v-layout row wrap>
++                    <v-flex xs12 class="text-xs-center" mt-5>
++                        <h1>Login</h1>
++                    </v-flex>
++                    <v-flex xs12 sm6 offset-sm3 mt-3>
++                        <v-layout column>
++                            <v-flex>
++                                <v-text-field
++                                        v-model="username"
++                                        v-on:keyup.enter="submitLogin"
++                                        name="username"
++                                        label="Benutzer"
++                                        id="username"
++                                        value=""
++                                        type="text"
++                                        required></v-text-field>
++                            </v-flex>
++                            <v-flex>
++                                <v-text-field
++                                        v-model="password"
++                                        v-on:keyup.enter="submitLogin"
++                                        name="password"
++                                        label="Passwort"
++                                        value=""
++                                        id="password"
++                                        type="password"
++                                        required></v-text-field>
++                            </v-flex>
++                            <v-flex class="text-xs-center" mt-5>
++                                <v-btn color="dark" v-on:click="submitLogin" type="submit">Anmelden</v-btn>
++                            </v-flex>
++                        </v-layout>
++                    </v-flex>
++                </v-layout>
++            </v-container>
++        </div>
++    </div>
+ </template>
+ 
+-
+-
+ <script>
++    import Api from "common/api";
++    const LOGIN_URL = "signin";
++
+     export default {
+         name: 'p-page-home',
+-        props: {
+-            staticFilter: Object
+-        },
+-        watch: {
+-            '$route'() {
+-                const query = this.$route.query;
+ 
+-                this.filter.q = query['q'];
+-                this.filter.camera = query['camera'] ? parseInt(query['camera']) : 0;
+-                this.filter.country = query['country'] ? query['country'] : '';
+-                this.lastFilter = {};
+-                this.routeName = this.$route.name;
+-                this.search();
+-            }
+-        },
+         data() {
+-            const query = this.$route.query;
+-            const routeName = this.$route.name;
+-            const order = query['order'] ? query['order'] : 'newest';
+-            const camera = query['camera'] ? parseInt(query['camera']) : 0;
+-            const q = query['q'] ? query['q'] : '';
+-            const country = query['country'] ? query['country'] : '';
+-            const view = this.viewType();
+-            const filter = {country: country, camera: camera, order: order, q: q};
+-            const settings = {view: view};
+-
+             return {
+-                results: [],
+-                scrollDisabled: true,
+-                pageSize: 60,
+-                offset: 0,
+-                selection: this.$clipboard.selection,
+-                settings: settings,
+-                filter: filter,
+-                lastFilter: {},
+-                routeName: routeName,
+-            };
++                username: '',
++                password: ''
++            }
+         },
+         methods: {
+-            viewType() {
+-                let queryParam = this.$route.query['view'];
+-                let storedType = window.localStorage.getItem("photo_view_type");
+-
+-                if (queryParam) {
+-                    window.localStorage.setItem("photo_view_type", queryParam);
+-                    return queryParam;
+-                } else if (storedType) {
+-                    return storedType;
+-                } else if (window.innerWidth < 960) {
+-                    return 'mosaic';
+-                } else if (window.innerWidth > 1600) {
+-                    return 'details';
+-                }
+-
+-                return 'tiles';
+-            },
+-            openLocation(index) {
+-                const photo = this.results[index];
+-
+-                if (photo.PhotoLat && photo.PhotoLong) {
+-                    this.$router.push({name: 'Places', query: {lat: photo.PhotoLat, long: photo.PhotoLong}});
+-                } else if (photo.LocName) {
+-                    this.$router.push({name: 'Places', query: {q: photo.LocName}});
+-                } else if (photo.LocCity) {
+-                    this.$router.push({name: 'Places', query: {q: photo.LocCity}});
+-                } else if (photo.LocCountry) {
+-                    this.$router.push({name: 'Places', query: {q: photo.LocCountry}});
+-                } else {
+-                    this.$router.push({name: 'Places', query: {q: photo.CountryName}});
+-                }
+-            },
+-            openPhoto(index) {
+-                this.$viewer.show(this.results, index)
+-            },
+-            loadMore() {
+-                if (this.scrollDisabled) return;
+-
+-                this.scrollDisabled = true;
+-
+-                this.offset += this.pageSize;
+-
+-                const params = {
+-                    count: this.pageSize,
+-                    offset: this.offset,
++            submitLogin: function (e) {
++                var credentials = {
++                    username: this.username,
++                    password: this.password
+                 };
+-
+-                Object.assign(params, this.lastFilter);
+-
+-                Photo.search(params).then(response => {
+-                    this.results = this.results.concat(response.models);
+-
+-                    this.scrollDisabled = (response.models.length < this.pageSize);
+-
+-                    if (this.scrollDisabled) {
+-                        this.$alert.info('All ' + this.results.length + ' photos loaded');
++                this.signin(this, credentials, "Photos")
++            },
++            signin(context, creds, redirect) {
++                Api.post(LOGIN_URL, creds, {
++                    headers: {
++                        'Content-Type': 'application/json',
++                    },
++                }).then(response => {
++                    if (response.status === 200) {
++                        localStorage.setItem("id_token", response.data.id_token);
++
++                        if (redirect) {
++                            context.$router.replace(redirect);
++                        }
+                     }
++                }, response => {
++                    context.error = response.statusText;
+                 });
+-            },
+-
++            }
+         },
+-    };
++        watch: {
++            '$route'() {
++                this.routeName = this.$route.name;
++            }
++        }
++    }
+ </script>
+diff --git a/frontend/src/photoprism.vue b/frontend/src/photoprism.vue
+index 63326d0..937e7bb 100644
+--- a/frontend/src/photoprism.vue
++++ b/frontend/src/photoprism.vue
+@@ -5,7 +5,7 @@
+         <p-alert></p-alert>
+ 
+         <v-app>
+-            <p-navigation v-show="loggedIn"></p-navigation>
++            <p-navigation v-if="loggedIn"></p-navigation>
+ 
+             <v-content>
+                 <router-view></router-view>
+diff --git a/frontend/src/routes.js b/frontend/src/routes.js
+index f8a8c3c..e455661 100644
+--- a/frontend/src/routes.js
++++ b/frontend/src/routes.js
+@@ -12,8 +12,9 @@ import Todo from "pages/todo.vue";
+ 
+ export default [
+     {
+-        name: "Home",
++        name: "Landing",
+         path: "/",
++        redirect: "/home",
+     },
+     {
+         name: "Home",
+@@ -88,6 +89,6 @@ export default [
+         meta: {area: "Settings"},
+     },
+     {
+-        path: "*", redirect: "/login",
++        path: "*", redirect: "/home",
+     },
+ ];
+diff --git a/frontend/tests/unit/common/session_test.js b/frontend/tests/unit/common/session_test.js
+index 8a33f54..e04e4a2 100644
+--- a/frontend/tests/unit/common/session_test.js
++++ b/frontend/tests/unit/common/session_test.js
+@@ -140,7 +140,7 @@ describe('common/session', () => {
+         await session.login("test@test.com", "passwd");
+         assert.equal(session.session_token, 8877);
+         assert.equal(session.storage.user, "{\"email\":\"test@test.com\",\"password\":\"passwd\"}");
+-        await session.logout();
++        await Auth.logout();
+         assert.equal(session.session_token, null);
+         mock.reset();
+     });
+diff --git a/localserve.sh b/localserve.sh
+index ea51e91..040d24a 100755
+--- a/localserve.sh
++++ b/localserve.sh
+@@ -18,4 +18,4 @@ PHOTOPRISM_SQL_PORT=4001
+ PHOTOPRISM_SQL_PASSWORD=photoprism
+ TF_CPP_MIN_LOG_LEVEL=0
+ 
+-go run cmd/photoprism/photoprism.go migrate
++go run cmd/photoprism/photoprism.go index

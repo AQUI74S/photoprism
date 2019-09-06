@@ -4,13 +4,9 @@
 
         <p-alert></p-alert>
 
-        <v-app>
-            <p-navigation v-show="loggedIn"></p-navigation>
-
-            <v-content>
-                <router-view></router-view>
-            </v-content>
-        </v-app>
+        <!-- the router view at the highest level will be -->
+        <!-- one of either <login> or <main> components -->
+        <router-view></router-view>
 
         <p-photo-viewer></p-photo-viewer>
     </div>
@@ -21,25 +17,5 @@
 
     export default {
         name: 'photoprism',
-        data(){
-            return {
-                loggedIn: true
-            }
-        },
-        created(){
-            if (this.$router.currentRoute.name == "Home") {
-                this.loggedIn= false
-            }
-        },
-        computed: {},
-        methods: {
-            login() {
-                // this.$refs.loginDialog.open();
-            },
-
-            logout() {
-                this.$session.logout();
-            },
-        },
     };
 </script>

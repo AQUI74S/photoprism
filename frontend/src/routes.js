@@ -1,5 +1,6 @@
+import Vue from "vue";
+
 import Photos from "pages/photos.vue";
-import Home from "pages/home.vue";
 import Albums from "pages/albums.vue";
 import Places from "pages/places.vue";
 import Labels from "pages/labels.vue";
@@ -9,17 +10,35 @@ import Library from "pages/library.vue";
 import Share from "pages/share.vue";
 import Settings from "pages/settings.vue";
 import Todo from "pages/todo.vue";
+import Login from "pages/login.vue";
+import Home from "pages/home.vue";
 
-export default [
-    {
-        name: "Home",
-        path: "/",
-    },
-    {
-        name: "Home",
-        path: "/home",
-        component: Home,
-    },
+const requireAuth = async (to, from, next) => {
+    if (!!Vue.prototype.$session.getKey()) {
+        // there is a session key. the server requires a password and
+        // we are authenticated. so continue to the route
+        return next();
+    }
+    if (Vue.prototype.$session.getNoAuthMode()) {
+        // there was not a session key but apparently the server doesn't
+        // require authentication anyway. so continue to the route
+        return next();
+    }
+    // at this point we don't know if the server needs auth or not
+    if (await Vue.prototype.$session.isAuthed()) {
+        // it doesn't, so let's remember that for the next time and
+        // continue to the route
+        Vue.prototype.$session.setNoAuthMode(true)
+        return next();
+    }
+    // the server requires authentication so redirect to the login screen
+    next({
+        name: "Login",
+        query: { redirect: to.fullPath },
+    });
+};
+
+const pages = [
     {
         name: "Photos",
         path: "/photos",
@@ -87,7 +106,24 @@ export default [
         component: Settings,
         meta: {area: "Settings"},
     },
+];
+
+export default [
     {
-        path: "*", redirect: "/login",
+        name: "Login",
+        path: "/login",
+        component: Login,
+    },
+    {
+        name: "Home",
+        path: "/",
+        component: Home,
+        beforeEnter: requireAuth,
+        children: pages,
+        redirect: {name: "Photos"},
+    },
+    {
+        path: "*",
+        redirect: {name: "Home"},
     },
 ];
