@@ -55,11 +55,10 @@ describe("model/label", () => {
     });
 
     it("should get date string",  () => {
-        const t = "2009-11-17 20:34:58.651387237 +0000 UTC";
-        const values = {ID: 5, LabelName: "Black Cat", LabelSlug: "black-cat", CreatedAt: t};
+        const values = {ID: 5, LabelName: "Black Cat", LabelSlug: "black-cat", CreatedAt: "2012-07-08T14:45:39Z"};
         const label = new Label(values);
         const result = label.getDateString();
-        assert.equal(result, "November 17, 2009 8:34 PM");
+        assert.equal(result, "Jul 8, 2012, 2:45 PM");
     });
 
     it("should get model name",  () => {

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -86,22 +87,6 @@ func (m *MediaFile) HasTimeAndPlace() bool {
 	}
 
 	result := !exifData.TakenAt.IsZero() && exifData.Lat != 0 && exifData.Long != 0
-
-	return result
-}
-
-func (m *MediaFile) TimeZone() (result string) {
-	if m.timeZone != "" {
-		return m.timeZone
-	}
-
-	exif, err := m.Exif()
-
-	if err != nil || exif.TimeZone == "" {
-		result = "UTC"
-	} else {
-		result = exif.TimeZone
-	}
 
 	return result
 }
@@ -269,7 +254,8 @@ func (m *MediaFile) EditedFilename() string {
 // RelatedFiles returns files which are related to this file.
 func (m *MediaFile) RelatedFiles() (result MediaFiles, mainFile *MediaFile, err error) {
 	baseFilename := m.DirectoryBasename()
-
+	// escape any meta characters in the file name
+	baseFilename = regexp.QuoteMeta(baseFilename)
 	matches, err := filepath.Glob(baseFilename + "*")
 
 	if err != nil {

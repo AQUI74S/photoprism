@@ -2,6 +2,7 @@ import axios from "axios";
 import Event from "pubsub-js";
 import "@babel/polyfill";
 import { router } from '../app.js'
+import "@babel/polyfill/noConflict";
 
 const Api = axios.create({
     baseURL: "/api/v1",

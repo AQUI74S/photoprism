@@ -72,7 +72,7 @@ module.exports = (config) => {
                     statements: 100,
                     lines: 100,
                     branches: 100,
-                    functions: 100,
+                    //functions: 100,
                 },
                 // thresholds per file
                 each: {
